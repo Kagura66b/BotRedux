@@ -3,7 +3,9 @@ package Handlers;
 import Main.CSVImport;
 import Main.Item;
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -65,6 +67,11 @@ public class CraftHandler {
                 showHelp(event);
                 break;
             case "listall":
+                Member user = event.getGuild().getMember(event.getAuthor());
+                boolean isAdmin;
+                for(Role role : user.getRoles()){
+                    isAdmin = role.getName().contains("Mod");
+                }
                 if(event.getAuthor().getName().contains("KageRa")){
                     listall(event);
                 }
@@ -88,8 +95,8 @@ public class CraftHandler {
         for (String[] entry : entries) {
             String name = event.getGuild().getMemberById(entry[0]).getNickname();
             entry[0] = name;
-            entry[1] = entry[1].substring(0, 9);
-            entry[2] = entry[2].substring(0, 9);
+            entry[1] = entry[1].substring(0, 10);
+            entry[2] = entry[2].substring(0, 10);
             outputBuilder.add(String.join(", ", entry));
         }
         String output = "" + String.join("\n", outputBuilder);
@@ -353,8 +360,6 @@ public class CraftHandler {
             if(!entry[0].equals("")) {
                 LocalDate today = LocalDateTime.now().toLocalDate();
                 LocalDate finish = LocalDateTime.parse(entry[2]).toLocalDate();
-                System.out.println(today.toString());
-                System.out.println(finish.toString());
                 if (today.equals(finish)) {
 
                     building.add(entry);
