@@ -68,11 +68,13 @@ public class CraftHandler {
                 break;
             case "listall":
                 Member user = event.getGuild().getMember(event.getAuthor());
-                boolean isAdmin;
-                for(Role role : user.getRoles()){
-                    isAdmin = role.getName().contains("Mod");
+                boolean isAdmin = false;
+                for(Role role : user.getRoles()) {
+                    if (role.getName().contains("Mod")){
+                        isAdmin = true;
+                    }
                 }
-                if(event.getAuthor().getName().contains("KageRa")){
+                if(isAdmin){
                     listall(event);
                 }
                 event.getMessage().delete().queue();
