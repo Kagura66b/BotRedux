@@ -69,6 +69,51 @@ public class CraftHandler {
             case "listall":
                 listall(event);
                 break;
+            case "cancel":
+                cancelCraft(event);
+                break;
+        }
+    }
+
+    private void cancelCraft(MessageReceivedEvent event){
+        boolean isCrafting = false;
+        int index = -1;
+        for(String[] entry: craftBacklog){
+            LocalDateTime end = LocalDateTime.parse(entry[2]);
+            if(entry[0].contains(event.getAuthor().getId()) && LocalDateTime.now().isBefore(end)){
+                isCrafting = true;
+                index = craftBacklog.indexOf(entry);
+            }
+        }
+        if(!isCrafting){
+            event.getChannel().sendMessage("You are not crafting right now").queue();
+            return;
+        }
+
+        boolean isToday = LocalDate.now().isEqual(LocalDateTime.parse(craftBacklog.get(index)[2]).toLocalDate());
+        if(isToday){
+            event.getChannel().sendMessage("It is too late to cancel this").queue();
+            return;
+        }
+        BufferedWriter overWriter = null;
+        try {
+            overWriter = new BufferedWriter(new FileWriter(fileName, false));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        craftBacklog.remove(index);
+        StringBuilder builder = new StringBuilder();
+        try {
+            for(String[] entry : craftBacklog){
+                overWriter.write(String.join(",", entry));
+                if(craftBacklog.size()-1 != craftBacklog.indexOf(entry)) {
+                    overWriter.newLine();
+                }
+            }
+
+            overWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -442,7 +487,8 @@ public class CraftHandler {
             for (int i = 0; i < building.size(); i++) {
                 String[] entry = building.get(i);
                 TextChannel text = jda.getTextChannelById(entry[5]);
-                text.sendMessage("<@" + entry[0] + ">\nYour ***" + entry[3] + "*** is ready for pickup").queueAfter(trigger, TimeUnit.SECONDS);
+                assert text != null;
+                //text.sendMessage("<@" + entry[0] + ">\nYour ***" + entry[3] + "*** is ready for pickup").queueAfter(trigger, TimeUnit.SECONDS);
             }
         }
         return building;
