@@ -52,6 +52,8 @@ public class MessageHandler extends ListenerAdapter {
             ItemHandler.getItem(command, event, dataTable);
         }else if(command.startsWith("!!craft ")||command.startsWith("!!crafting ")){
             craftHandler.processCommand(command, event);
+        }else if(command.startsWith("!!help")) {
+            printHelp(event);
         }else if(command.startsWith("?8ball")) {
             Random rand = new Random();
             int check = rand.nextInt(3);
@@ -78,9 +80,17 @@ public class MessageHandler extends ListenerAdapter {
             } catch (GeneralSecurityException e) {
                 e.printStackTrace();
             }
-            //event.getChannel().sendMessage("It's not like I like being a server mascot\nB-Baka!!!").queue();
-            //event.getChannel().sendMessage("I-Its not like I LIKE being your server mascot, \nB-Baka").queue();
-            //event.getMessage().delete().queue();
         }
+    }
+
+    public void printHelp(MessageReceivedEvent event){
+        event.getMessage().delete().queue();
+        StringBuilder builder = new StringBuilder();
+        builder.append("```Help Commands\n");
+        builder.append("!!craft <list|new|help> \n");
+        builder.append("!!item <item name>\n");
+        builder.append("!!loot <gold|items|help>\n");
+        builder.append("```");
+        event.getChannel().sendMessage(builder.toString()).queue();
     }
 }

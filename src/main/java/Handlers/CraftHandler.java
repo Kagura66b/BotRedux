@@ -67,22 +67,23 @@ public class CraftHandler {
                 showHelp(event);
                 break;
             case "listall":
-                Member user = event.getGuild().getMember(event.getAuthor());
-                boolean isAdmin = false;
-                for(Role role : user.getRoles()) {
-                    if (role.getName().contains("Mod")){
-                        isAdmin = true;
-                    }
-                }
-                if(isAdmin){
-                    listall(event);
-                }
-                event.getMessage().delete().queue();
+                listall(event);
                 break;
         }
     }
 
     private void listall(MessageReceivedEvent event){
+        Member user = event.getGuild().getMember(event.getAuthor());
+        boolean isAdmin = false;
+        for(Role role : user.getRoles()) {
+            if (role.getName().contains("Mod")){
+                isAdmin = true;
+            }
+        }
+        event.getMessage().delete().queue();
+        if(!isAdmin){
+            return;
+        }
         List<String[]> entries = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
             String line;
@@ -223,6 +224,21 @@ public class CraftHandler {
         final MessageReceivedEvent finalEvent = event;
         final String[] finalArgArray = arguementArray;
         final Item finalItem = item;
+
+        //validate user does not have another job in progress
+        boolean isCrafting = false;
+        for(String[] entry: craftBacklog){
+            LocalDateTime end = LocalDateTime.parse(entry[2]);
+            if(entry[0].contains(event.getAuthor().getId()) && LocalDateTime.now().isBefore(end)){
+                isCrafting = true;
+            }
+        }
+
+        if(isCrafting){
+            event.getChannel().sendMessage("You are already crafting").queue();
+            return;
+        }
+
 
         event.getChannel().sendMessage("<@" + event.getAuthor().getId() + ">\nAre you sure you want to craft:\n***" + item.getName() + "***?\nReact with :white_check_mark: or  :negative_squared_cross_mark:")
                 .queue(new Consumer<Message>() {
