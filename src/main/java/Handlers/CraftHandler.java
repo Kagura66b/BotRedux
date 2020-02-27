@@ -211,7 +211,6 @@ public class CraftHandler {
 
         //Retrieve item name
         Item item = dataTable.getItem(itemString);
-        System.out.println(item.isCraftable());
         if (item == null) {
             event.getChannel().sendMessage("Thats not an item, B-Baka").queue();
             return;
@@ -238,6 +237,59 @@ public class CraftHandler {
             event.getChannel().sendMessage("You are already crafting").queue();
             return;
         }
+
+        //<editor-fold desc="getCraftingTime">
+        int totalBonus = 10+((Integer.parseInt(arguementArray[2])-10)/2);
+        System.out.println((Integer.parseInt(arguementArray[2])-10)/2 + " and " + totalBonus);
+        if(arguementArray[1] != null) {
+            if (arguementArray[0].equals("true")) {
+                totalBonus += (Integer.parseInt(arguementArray[1]) * 2);
+            } else {
+                totalBonus += Integer.parseInt(arguementArray[1]);
+            }
+        }
+        int baseTime=20;
+        String rarity = item.getRarity();
+        switch(rarity){
+            case "common":
+            case "Common":
+                baseTime = 20;
+                if(item.isConsumable()){
+                    baseTime = baseTime/3;
+                }
+                break;
+            case "uncommon":
+            case "Uncommon":
+                baseTime = 100;
+                if(item.isConsumable()){
+                    baseTime = baseTime/3;
+                }
+                break;
+            case "rare":
+            case "Rare":
+                baseTime = 240;
+                if(item.isConsumable()){
+                    baseTime = baseTime/4;
+                }
+                break;
+            case "very rare":
+            case "Very Rare":
+                baseTime = 400;
+                if(item.isConsumable()){
+                    baseTime = baseTime/4;
+                }
+                break;
+            case "legendary":
+            case "Legendary":
+                baseTime = 500;
+                if(item.isConsumable()){
+                    baseTime = baseTime/4;
+                }
+                break;
+        }
+        int finalTime = baseTime/totalBonus;
+        event.getChannel().sendMessage("Base Time = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
+        //</editor-fold>
 
 
         event.getChannel().sendMessage("<@" + event.getAuthor().getId() + ">\nAre you sure you want to craft:\n***" + item.getName() + "***?\nReact with :white_check_mark: or  :negative_squared_cross_mark:")
@@ -320,7 +372,7 @@ public class CraftHandler {
                 break;
         }
         int finalTime = baseTime/totalBonus;
-        event.getChannel().sendMessage("Base Time = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
+        //event.getChannel().sendMessage("Base Time = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
         LocalDateTime timeStart = LocalDateTime.now();
         LocalDateTime timeEnd = LocalDateTime.now().plusDays(finalTime);
         String crafterID = event.getAuthor().getId();
@@ -384,7 +436,7 @@ public class CraftHandler {
                 }
             }
         }
-        LocalDateTime target = LocalTime.parse("17:00").atDate(LocalDate.now());
+        LocalDateTime target = LocalTime.parse("13:00").atDate(LocalDate.now());
         long trigger = LocalDateTime.now().until(target, SECONDS);
         if(trigger!=0){
             for (int i = 0; i < building.size(); i++) {

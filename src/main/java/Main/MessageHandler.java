@@ -50,7 +50,7 @@ public class MessageHandler extends ListenerAdapter {
             lootHandler.processCommand(command, event);
         }else if(command.startsWith("!!item ")) {
             ItemHandler.getItem(command, event, dataTable);
-        }else if(command.startsWith("!!craft ")||command.startsWith("!!crafting ")){
+        }else if(command.startsWith("??craft ")||command.startsWith("!!crafting ")){
             craftHandler.processCommand(command, event);
         }else if(command.startsWith("!!help")) {
             printHelp(event);
