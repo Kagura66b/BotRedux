@@ -1,14 +1,12 @@
 package Main;
 
-import Handlers.CraftHandler;
-import Handlers.ItemHandler;
-import Handlers.LootHandler;
-import Handlers.ResponseHandler;
+import Handlers.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Random;
 
 public class MessageHandler extends ListenerAdapter {
@@ -17,6 +15,7 @@ public class MessageHandler extends ListenerAdapter {
     CraftHandler craftHandler;
     LootHandler lootHandler;
     JDA jda;
+    GSheetTester tester = new GSheetTester();
 
     MessageHandler(CSVImport constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
         dataTable = constructDataTable;
@@ -72,9 +71,16 @@ public class MessageHandler extends ListenerAdapter {
                     break;
             }
         }else if(command.startsWith("!!baka")){
-            event.getChannel().sendMessage("It's not like I like being a server mascot\nB-Baka!!!").queue();
+            try {
+                tester.print();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (GeneralSecurityException e) {
+                e.printStackTrace();
+            }
+            //event.getChannel().sendMessage("It's not like I like being a server mascot\nB-Baka!!!").queue();
             //event.getChannel().sendMessage("I-Its not like I LIKE being your server mascot, \nB-Baka").queue();
-            event.getMessage().delete().queue();
+            //event.getMessage().delete().queue();
         }
     }
 }

@@ -13,7 +13,7 @@ import java.io.IOException;
 public class Main{
 
     static final String dataTableSource = "src/main/resources/MasterList.csv";
-    static final String tokenSource = "/home/ubuntu/token";
+    static final String tokenSource = "/home/ubuntu/testToken";
     //static final String tokenSource = "F:\\token";
     public static ResponseHandler responseHandler;
     public static JDA jda;
