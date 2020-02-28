@@ -1,6 +1,6 @@
 package Handlers;
 
-import Main.CSVImport;
+import Main.ItemDataTable;
 import Main.Item;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,14 +17,13 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class CraftHandler {
 
-    CSVImport dataTable;
+    ItemDataTable dataTable;
     List<String[]> craftBacklog;
     List<String[]> itemsDueToday;
     String fileName = "src/main/resources/items.csv";
@@ -34,7 +33,7 @@ public class CraftHandler {
     JDA jda;
 
 
-    public CraftHandler(CSVImport importDataTable, ResponseHandler iResponseHandler, JDA importJDA) throws IOException {
+    public CraftHandler(ItemDataTable importDataTable, ResponseHandler iResponseHandler, JDA importJDA) throws IOException {
         jda = importJDA
         ;responseHandler = iResponseHandler;
         dataTable = importDataTable;
@@ -105,14 +104,15 @@ public class CraftHandler {
             e.printStackTrace();
         }
         craftBacklog.remove(index);
-        StringBuilder builder = new StringBuilder();
         try {
             for(String[] entry : craftBacklog){
+                assert overWriter != null;
                 overWriter.write(String.join(",", entry));
                 if(craftBacklog.size()-1 != craftBacklog.indexOf(entry)) {
                     overWriter.newLine();
                 }
             }
+            assert overWriter != null;
             overWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -188,8 +188,8 @@ public class CraftHandler {
         for (String[] entry : entries) {
             if (entry[0].equals(crafterID)) {
                 entry[0] = "<@" + entry[0] + ">";
-                entry[1] = entry[1].substring(0, 9);
-                entry[2] = entry[2].substring(0, 9);
+                entry[1] = entry[1].substring(0, 10);
+                entry[2] = entry[2].substring(0, 10);
                 outputBuilder.add(String.join(", ", entry));
             }
         }

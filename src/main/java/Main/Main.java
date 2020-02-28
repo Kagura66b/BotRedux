@@ -13,18 +13,18 @@ import java.io.IOException;
 public class Main{
 
     static final String dataTableSource = "src/main/resources/MasterList.csv";
-    //static final String tokenSource = "/home/ubuntu/testToken";
-    static final String tokenSource = "F:\\testToken";
+    static final String tokenSource = "/home/ubuntu/testToken";
+    //static final String tokenSource = "F:\\testToken";
     public static ResponseHandler responseHandler;
     public static JDA jda;
 
     public static void main(String[] args) throws LoginException, IOException, InterruptedException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        //dataTable = new CSVImport("/home/ubuntu/Documents/export2.csv");
+        //dataTable = new ItemDataTable("/home/ubuntu/Documents/export2.csv");
         BufferedReader tokenReader = new BufferedReader(new FileReader(tokenSource));
         String token = tokenReader.readLine();
         System.out.println(token);
-        CSVImport dataTable = new CSVImport(dataTableSource);
+        ItemDataTable dataTable = new ItemDataTable(dataTableSource);
         builder.setToken(token);
         jda = builder.build();
         jda.awaitReady();

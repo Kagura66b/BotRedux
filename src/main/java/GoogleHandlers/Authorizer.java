@@ -9,30 +9,15 @@ import com.google.auth.oauth2.ServiceAccountCredentials;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Authorizer {
-    public static HttpRequestInitializer authorize() throws GeneralSecurityException, IOException {
-        /*InputStream in = new FileInputStream("C:\\Users\\kingo\\IdeaProjects\\credentials.json");
-        GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JacksonFactory.getDefaultInstance(), new InputStreamReader(in));
-
-        List<String> scopes = Arrays.asList(SheetsScopes.SPREADSHEETS);
-
-        GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance(), clientSecrets, scopes).setDataStoreFactory(new MemoryDataStoreFactory())
-                .setAccessType("offline").build();
-        Credential credential = new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");
-
-         */
-        List<String> scopes = Arrays.asList(SheetsScopes.SPREADSHEETS);
-        InputStream in = new FileInputStream("C:\\Users\\kingo\\IdeaProjects\\credentials.json");
+    public static HttpRequestInitializer authorize() throws IOException {
+        List<String> scopes = Collections.singletonList(SheetsScopes.SPREADSHEETS);
+        //InputStream in = new FileInputStream("C:\\Users\\kingo\\IdeaProjects\\credentials.json");
+        InputStream in = new FileInputStream("/home/ubuntu/credentials.json");
         GoogleCredentials serviceCredentials = ServiceAccountCredentials.fromStream(in).createScoped(scopes);
-
-        //GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
-        HttpRequestInitializer requestInitializer = new HttpCredentialsAdapter(serviceCredentials);
-
-
-        return requestInitializer;
+        return new HttpCredentialsAdapter(serviceCredentials);
     }
 }

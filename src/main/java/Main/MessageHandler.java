@@ -12,12 +12,12 @@ import java.util.Random;
 
 public class MessageHandler extends ListenerAdapter {
 
-    CSVImport dataTable;
+    ItemDataTable dataTable;
     CraftHandler craftHandler;
     LootHandler lootHandler;
     JDA jda;
 
-    MessageHandler(CSVImport constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
+    MessageHandler(ItemDataTable constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
         dataTable = constructDataTable;
         jda = importJDA;
         craftHandler = new CraftHandler(dataTable, responseHandler, jda);
@@ -48,9 +48,9 @@ public class MessageHandler extends ListenerAdapter {
         command = command.toLowerCase();
         if(command.startsWith("!!loot ")){
             lootHandler.processCommand(command, event);
-        }else if(command.startsWith("!!item ")) {
-            ItemHandler.getItem(command, event, dataTable);
-        }else if(command.startsWith("??craft ")||command.startsWith("!!crafting ")){
+        }else if(command.startsWith("??item ")) {
+            ItemHandler.processCommand(command, event, dataTable);
+        }else if(command.startsWith("??craft ")||command.startsWith("??crafting ")){
             craftHandler.processCommand(command, event);
         }else if(command.startsWith("!!help")) {
             printHelp(event);
@@ -74,10 +74,8 @@ public class MessageHandler extends ListenerAdapter {
             }
         }else if(command.startsWith("??gtest")){
             try {
-                SheetTester.writeToSheet(craftHandler);
-            } catch (GeneralSecurityException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
+                SheetTester.processCommand(command, craftHandler);
+            } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
             }
         }
@@ -85,12 +83,11 @@ public class MessageHandler extends ListenerAdapter {
 
     public void printHelp(MessageReceivedEvent event){
         event.getMessage().delete().queue();
-        StringBuilder builder = new StringBuilder();
-        builder.append("```Help Commands\n");
-        builder.append("!!craft <list|new|help> \n");
-        builder.append("!!item <item name>\n");
-        builder.append("!!loot <gold|items|help>\n");
-        builder.append("```");
-        event.getChannel().sendMessage(builder.toString()).queue();
+        String builder = "```Help Commands\n" +
+                "!!craft <list|new|help> \n" +
+                "!!item <item name>\n" +
+                "!!loot <gold|items|help>\n" +
+                "```";
+        event.getChannel().sendMessage(builder).queue();
     }
 }

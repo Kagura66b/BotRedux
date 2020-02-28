@@ -1,6 +1,6 @@
 package Handlers;
 
-import Main.CSVImport;
+import Main.ItemDataTable;
 import Main.Item;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -11,9 +11,9 @@ import java.util.Random;
 @SuppressWarnings("IntegerDivisionInFloatingPointContext")
 public class LootHandler {
 
-    CSVImport datatable;
+    ItemDataTable datatable;
 
-    public LootHandler(CSVImport importTable){
+    public LootHandler(ItemDataTable importTable){
         datatable = importTable;
     }
 
