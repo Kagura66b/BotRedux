@@ -113,7 +113,6 @@ public class CraftHandler {
                     overWriter.newLine();
                 }
             }
-
             overWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
