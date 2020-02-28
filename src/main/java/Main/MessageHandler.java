@@ -1,5 +1,6 @@
 package Main;
 
+import GoogleHandlers.SheetTester;
 import Handlers.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -15,7 +16,6 @@ public class MessageHandler extends ListenerAdapter {
     CraftHandler craftHandler;
     LootHandler lootHandler;
     JDA jda;
-    GSheetTester tester = new GSheetTester();
 
     MessageHandler(CSVImport constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
         dataTable = constructDataTable;
@@ -72,12 +72,12 @@ public class MessageHandler extends ListenerAdapter {
                     event.getChannel().sendMessage("Have you tried shaking it?").queue();
                     break;
             }
-        }else if(command.startsWith("!!baka")){
+        }else if(command.startsWith("??gtest")){
             try {
-                tester.print();
-            } catch (IOException e) {
-                e.printStackTrace();
+                SheetTester.writeToSheet(craftHandler);
             } catch (GeneralSecurityException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

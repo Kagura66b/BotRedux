@@ -95,6 +95,9 @@ public class CraftHandler {
             event.getChannel().sendMessage("It is too late to cancel this").queue();
             return;
         }
+
+        String[] toBeDeleted = craftBacklog.get(index);
+
         BufferedWriter overWriter = null;
         try {
             overWriter = new BufferedWriter(new FileWriter(fileName, false));
@@ -115,6 +118,9 @@ public class CraftHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        event.getChannel().sendMessage("<@" + toBeDeleted[0] + ">\nYour " + toBeDeleted[3] + " has been removed from the crafting queue").queue();
+
     }
 
     private void listall(MessageReceivedEvent event){
@@ -493,6 +499,10 @@ public class CraftHandler {
         }
         return building;
 
+    }
+
+    public List<String[]> getCraftBacklog(){
+        return craftBacklog;
     }
 }
  /*Craft Array Formatting

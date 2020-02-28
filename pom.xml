@@ -75,7 +75,7 @@
         <dependency>
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-sheets</artifactId>
-            <version>v4-rev1-1.21.0</version>
+            <version>v4-rev581-1.25.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.oauth-client/google-oauth-client -->
         <dependency>
