@@ -2,6 +2,8 @@ package Handlers;
 
 import Main.ItemDataTable;
 import Main.Item;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 public class ItemHandler {
@@ -11,7 +13,19 @@ public class ItemHandler {
         command = command.toLowerCase();
         String[] parsing = command.split(" ");
         if(parsing[1].contains("rebuild")){
-            dataTable.rebuildDataTable();
+            Member user = event.getGuild().getMember(event.getAuthor());
+            boolean isAdmin = false;
+            for(Role role : user.getRoles()) {
+                if (role.getName().contains("Mod")){
+                    isAdmin = true;
+                }
+            }
+            event.getMessage().delete().queue();
+            if(!isAdmin){
+                return;
+            }
+            dataTable.rebuildDataTable(event);
+            event.getChannel().sendMessage("DataTable has been rebuilt").queue();
         }else{
             getItem(command, event, dataTable);
         }

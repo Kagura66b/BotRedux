@@ -1,6 +1,6 @@
 package Main;
 
-import GoogleHandlers.SheetTester;
+import GoogleHandlers.SheetInformationBuffer;
 import Handlers.*;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -48,7 +48,7 @@ public class MessageHandler extends ListenerAdapter {
         command = command.toLowerCase();
         if(command.startsWith("!!loot ")){
             lootHandler.processCommand(command, event);
-        }else if(command.startsWith("??item ")) {
+        }else if(command.startsWith("!!item ")) {
             ItemHandler.processCommand(command, event, dataTable);
         }else if(command.startsWith("??craft ")||command.startsWith("??crafting ")){
             craftHandler.processCommand(command, event);
@@ -74,7 +74,7 @@ public class MessageHandler extends ListenerAdapter {
             }
         }else if(command.startsWith("??gtest")){
             try {
-                SheetTester.processCommand(command, craftHandler);
+                SheetInformationBuffer.processCommand(command, craftHandler);
             } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
             }

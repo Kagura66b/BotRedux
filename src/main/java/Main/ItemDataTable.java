@@ -1,13 +1,12 @@
 package Main;
 
-import GoogleHandlers.SheetTester;
+import GoogleHandlers.SheetInformationBuffer;
 import me.xdrop.fuzzywuzzy.FuzzySearch;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ItemDataTable {
@@ -21,7 +20,7 @@ public class ItemDataTable {
         //Importing Item records from CSV
         List<List<String>> rawData = new ArrayList<>();
         try {
-            rawData = SheetTester.retrieveSheetData();
+            rawData = SheetInformationBuffer.retrieveSheetData();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -61,10 +60,10 @@ public class ItemDataTable {
         */
     }
 
-    public void rebuildDataTable(){
+    public void rebuildDataTable(MessageReceivedEvent event){
         List<List<String>> rawData = new ArrayList<>();
         try {
-            rawData = SheetTester.retrieveSheetData();
+            rawData = SheetInformationBuffer.retrieveSheetData();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -80,10 +79,9 @@ public class ItemDataTable {
         for(String[] entry: newRecords){
             if(entry.length!=15){
                 System.out.println("ALERT ON LINE: " + newRecords.indexOf(entry));
-            }else{
-                System.out.print("1 ");
             }
         }
+        event.getChannel().sendMessage(newRecords.size() + " Entries processed").queue();
     }
 
     public int getSize(){
