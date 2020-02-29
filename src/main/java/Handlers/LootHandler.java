@@ -30,6 +30,11 @@ public class LootHandler {
             case "help":
                 showHelp(event);
                 break;
+            case "property":
+            case "prop":
+            case "minor":
+                getMinorProperty(event);
+                break;
         }
     }
 
@@ -153,6 +158,94 @@ public class LootHandler {
 
     private int getTreasure(double cr, int number){
         return (int) Math.floor(number*(0.717*Math.pow(cr,3.25)+8));
+    }
+
+    private void getMinorProperty(MessageReceivedEvent event){
+        int property = new Random().nextInt(20);
+        String out = "It fucked up";
+        switch(property){
+            case 0:
+                out="***Artful***\n" +
+                        "The bearer is proficient in one tool or set of tools, of the GM’s choice, while the item is on the bearer’s person.";
+                break;
+            case 1:
+                out = "***Beackoner***\n" +
+                        "If the item is separated from the bearer, the bearer instinctively knows the item’s direction and rough distance. This knowledge lasts for 24 hours or until the item is attuned to someone else, whichever comes first.";
+                break;
+            case 2:
+                out = "***Brave***\n" +
+                        "When the bearer of this item contemplates or undertakes a cowardly act—or even a neutral act, when a more daring option is available—the item enhances feelings of shame and guilt.";
+                break;
+            case 3:
+                out = "***Bulwark***\n" +
+                        "If the item is in the bearer’s possession for the entirety of a long rest, the item grants the bearer 5 temporary hit points at the conclusion of that rest. If not used, these hit points fade in 24 hours.\n";
+                break;
+            case 4:
+                out = "***Cowardly***\n" +
+                        "When the bearer is presented with an opportunity to act in a cowardly or self-preserving manner, the item heightens the bearer’s urge to do so.\n";
+                break;
+            case 5:
+                out = "*** Devoted ***\n" +
+                        "The item fights to remain attuned to its current bearer. The item must be separated from the bearer for 48 hours, rather than the standard 24, to break the attunement. If a new individual attempts to attune the item when a prior attunement is still in effect, the individual must succeed on a DC 14 Charisma check at the end of that short rest. On a failure, the item fails to attune to the new owner, remaining attuned to the old.\n";
+                break;
+            case 6:
+                out = "***Enigmatic***\n" +
+                        "Neither examination over the course of a short rest, nor identify or similar magics, reveal this item’s properties. The bearer can learn those properties only through attunement or trial and error.\n";
+                break;
+            case 7:
+                out = "***Fastidious***\n" +
+                        "Once per day, as an action, the bearer can magically clean themselves, their outfit, and the item itself of dirt, grime, sweat, and so forth. This power resets at dawn.\n";
+                break;
+            case 8:
+                out = "***Focused***\n" +
+                        "The bearer of this item gains a +1 bonus to Constitution saving throws made to avoid losing concentration on an ongoing spell.\n";
+                break;
+            case 9:
+                out = "***Gloom-Sight***\n" +
+                        "If the bearer of this item possesses darkvision, the effective distance of that darkvision increases by 20 feet while the item is on the bearer’s person. It does not, however, grant darkvision to a bearer who does not already possess it.\n";
+                break;
+            case 10:
+                out = "***Hardy***\n" +
+                        "If the item is in the bearer’s possession for the entirety of a long rest, then at the conclusion of that rest, the item grants the bearer one extra hit die, which can be spent as normal to regain hit points during a short rest. If not used, this extra hit die disappears in 24 hours.\n";
+                break;
+            case 11:
+                out = "***Lodestar***\n" +
+                        "This item is linked to a specific location or object, determined by the GM. The bearer can use an action to determine the distance and direction to that place or object. The item does not grant the bearer any specific knowledge of what that item or place might be.\n";
+                break;
+            case 12:
+                out = "***Restful***\n" +
+                        "If the item is in the bearer’s possession since the beginning of a long rest, the bearer requires only six hours to gain the benefit of that rest, rather than the standard eight. The bearer can still gain the benefits of a long rest only once per day.\n";
+                break;
+            case 13:
+                out = "***Resucitator***\n" +
+                        "If the item is in the bearer’s possession, the bearer gains a +2 bonus to the first death save made that day. This power resets at dawn.\n";
+                break;
+            case 14:
+                out = "***Schemer***\n" +
+                        "As an action while the item is on the bearer’s person, the bearer may choose one individual within both sight and earshot. Until the bearer ends the effect (no action required) or a full minute passes, anything the bearer says is heard only by that individual, not by anyone else. (This is a one-way effect only.) This power can be used once a day and resets at dawn.";
+                break;
+            case 15:
+                out = "***Skillful***\n" +
+                        "The bearer gains a +1 bonus to ability checks using one specific skill, of the GM’s choice, while the item is on the bearer’s person.\n";
+                break;
+            case 16:
+                out = "***Speedy***\n" +
+                        "As an action while the item is on the bearer’s person, the bearer may gain a +5 to walking speed. This bonus lasts until the bearer deactivates it (no action required). The item grants this bonus up to a maximum total duration of one minute per day, resetting at dawn.\n";
+                break;
+            case 17:
+                out = "***Suppressible***\n" +
+                        "As an action, the bearer may suppress the item’s magic, in its entirety, for a preset amount of time (up to 24 hours). During that time, the item behaves as a non-magical item, cannot be attuned by anyone (though existing attunement does not end), and does not register as magical to detect magic, identify, or any other spells or abilities that detect magic. The effect cannot be ended prematurely; it lasts for the duration specified when activated.\n";
+                break;
+            case 18:
+                out = "***Unwavering***\n" +
+                        "The item grants the bearer an extra sliver of luck to slightly mitigate unfavorable conditions. When the item is created, the GM chooses one of the following: attack rolls, saving throws, or ability checks. When the bearer makes a roll of the chosen type with disadvantage, the item grants a +1 bonus on that roll.\n";
+                break;
+            case 19:
+                out = "***Dual-Featured***\n" +
+                        "Roll twice, rerolling any additional 20s.\n";
+                break;
+        }
+        event.getChannel().sendMessage(out).queue();
     }
 
 }
