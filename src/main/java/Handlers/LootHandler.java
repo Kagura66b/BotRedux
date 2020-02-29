@@ -152,7 +152,7 @@ public class LootHandler {
     }
 
     private int getTreasure(double cr, int number){
-        return (int) Math.floor(number*(0.717*Math.pow(cr,3.311)+4));
+        return (int) Math.floor(number*(0.717*Math.pow(cr,3.25)+8));
     }
 
 }

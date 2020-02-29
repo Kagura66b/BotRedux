@@ -82,56 +82,7 @@ public class SheetInformationBuffer {
         return sheetData;
     }
 
-    public static void processCommand(String command, CraftHandler importCrafts) throws GeneralSecurityException, IOException {
-        sheets = SheetsBuilder.getSheets();
-        itemArray = importCrafts.getCraftBacklog();
-        command = command.toLowerCase();
-        String[] parsing = command.split(" ");
-        switch(parsing[1]){
-            case "write":
-                writeToSheet();
-                break;
-            case "read":
-                readFromSheet();
-                break;
-        }
-    }
 
-    private static void readFromSheet() throws IOException {
-        String range = "Bot Friendly";
-        Sheets.Spreadsheets.Values.Get request =
-                sheets.spreadsheets().values().get(ID, "Sheet1");
 
-        List<List<Object>> response = request.execute().getValues();
-        StringBuilder build = new StringBuilder();
-        for(List<Object> row:response){
-            StringBuilder out = new StringBuilder();
-            for(Object cell:row){
-                out.append(cell).append(", ");
-            }
-            build.append(out).append("\n");
-        }
-        String output = build.toString();
-        System.out.println(output);
-    }
-
-    private static void writeToSheet() throws IOException {
-        List<List<Object>> outputToBody = new ArrayList<>();
-        for(String[] entryList:itemArray){
-            List<Object> builder = new ArrayList<>(Arrays.asList(entryList));
-            outputToBody.add(builder);
-        }
-
-        ValueRange body = new ValueRange().setValues(outputToBody);
-
-        sheets.spreadsheets().values()
-                .append(ID, "A1", body)
-                .setValueInputOption("RAW")
-                .setInsertDataOption("INSERT_ROWS")
-                .setIncludeValuesInResponse(true)
-                .execute();
-
-        //sheets.spreadsheets().values().
-    }
 
 }

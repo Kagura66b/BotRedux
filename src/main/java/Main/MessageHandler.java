@@ -50,11 +50,11 @@ public class MessageHandler extends ListenerAdapter {
             lootHandler.processCommand(command, event);
         }else if(command.startsWith("!!item ")) {
             ItemHandler.processCommand(command, event, dataTable);
-        }else if(command.startsWith("??craft ")||command.startsWith("??crafting ")){
+        }else if(command.startsWith("!!craft ")||command.startsWith("!!crafting ")){
             craftHandler.processCommand(command, event);
         }else if(command.startsWith("!!help")) {
             printHelp(event);
-        }else if(command.startsWith("?8ball")) {
+        }else if(command.startsWith("!8ball")) {
             Random rand = new Random();
             int check = rand.nextInt(3);
             if(command.contains("pokemon")){
@@ -71,12 +71,6 @@ public class MessageHandler extends ListenerAdapter {
                 case 2:
                     event.getChannel().sendMessage("Have you tried shaking it?").queue();
                     break;
-            }
-        }else if(command.startsWith("??gtest")){
-            try {
-                SheetInformationBuffer.processCommand(command, craftHandler);
-            } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
             }
         }
     }
