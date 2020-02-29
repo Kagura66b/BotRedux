@@ -20,7 +20,7 @@ public class ItemDataTable {
         //Importing Item records from CSV
         List<List<String>> rawData = new ArrayList<>();
         try {
-            rawData = SheetInformationBuffer.retrieveSheetData();
+            rawData = SheetInformationBuffer.retrieveItemSheetData();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }
@@ -63,7 +63,7 @@ public class ItemDataTable {
     public void rebuildDataTable(MessageReceivedEvent event){
         List<List<String>> rawData = new ArrayList<>();
         try {
-            rawData = SheetInformationBuffer.retrieveSheetData();
+            rawData = SheetInformationBuffer.retrieveItemSheetData();
         } catch (IOException | GeneralSecurityException e) {
             e.printStackTrace();
         }

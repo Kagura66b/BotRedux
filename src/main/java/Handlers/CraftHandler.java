@@ -1,16 +1,16 @@
 package Handlers;
 
+import GoogleHandlers.SheetInformationBuffer;
 import Main.ItemDataTable;
 import Main.Item;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -27,19 +27,18 @@ public class CraftHandler {
     List<String[]> craftBacklog;
     List<String[]> itemsDueToday;
     String fileName = "src/main/resources/items.csv";
-    BufferedWriter writer;
+    //BufferedWriter writer;
     Random rand;
     ResponseHandler responseHandler;
     JDA jda;
 
 
-    public CraftHandler(ItemDataTable importDataTable, ResponseHandler iResponseHandler, JDA importJDA) throws IOException {
+    public CraftHandler(ItemDataTable importDataTable, ResponseHandler iResponseHandler, JDA importJDA) {
         jda = importJDA
         ;responseHandler = iResponseHandler;
         dataTable = importDataTable;
         craftBacklog = importCraftingList();
         itemsDueToday = processBacklog(craftBacklog);
-        writer = new BufferedWriter(new FileWriter(fileName, true));
         rand = new Random();
     }
 
@@ -89,31 +88,23 @@ public class CraftHandler {
             return;
         }
 
-        boolean isToday = LocalDate.now().isEqual(LocalDateTime.parse(craftBacklog.get(index)[2]).toLocalDate());
+        long remaining = LocalDateTime.now().until(LocalDateTime.parse(craftBacklog.get(index)[2]), SECONDS);
+        boolean isToday = remaining>0 && remaining<361;
         if(isToday){
             event.getChannel().sendMessage("It is too late to cancel this").queue();
             return;
         }
 
         String[] toBeDeleted = craftBacklog.get(index);
-
-        BufferedWriter overWriter = null;
-        try {
-            overWriter = new BufferedWriter(new FileWriter(fileName, false));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         craftBacklog.remove(index);
+
+        List<Object> rowToRemove = new ArrayList<>();
+        for(String field:toBeDeleted){
+            rowToRemove.add(field);
+        }
+
         try {
-            for(String[] entry : craftBacklog){
-                assert overWriter != null;
-                overWriter.write(String.join(",", entry));
-                if(craftBacklog.size()-1 != craftBacklog.indexOf(entry)) {
-                    overWriter.newLine();
-                }
-            }
-            assert overWriter != null;
-            overWriter.close();
+            SheetInformationBuffer.cancelCraft(rowToRemove);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -134,29 +125,44 @@ public class CraftHandler {
         if(!isAdmin){
             return;
         }
-        List<String[]> entries = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null){
-                String[] values  = line.split(",");
-                entries.add(values);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        List<String> outputBuilder = new ArrayList<>();
-        for (String[] entry : entries) {
+        int totalLength = 0;
+        int index = 0;
+        List<List<String>> outputBuilder = new ArrayList<>();
+        outputBuilder.add(new ArrayList<>());
+        for (String[] entry : craftBacklog) {
+            int tempLength = 0;
+            tempLength+=10;
+            String[] entryToBuild = new String[4];
             String name = event.getGuild().getMemberById(entry[0]).getNickname();
-            entry[0] = name;
-            entry[1] = entry[1].substring(0, 10);
-            entry[2] = entry[2].substring(0, 10);
-            outputBuilder.add(String.join(", ", entry));
+            entryToBuild[0] = name;
+            entryToBuild[1] = entry[1].substring(0, 10);
+            entryToBuild[2] = entry[2].substring(0, 10);
+            entryToBuild[3] = entry[3];
+            for(String builtEntry:entryToBuild){
+                tempLength+=builtEntry.length();
+            }
+            if(totalLength+tempLength>2000){
+                index+=1;
+                totalLength=tempLength;
+            }else{
+                totalLength+=tempLength;
+                outputBuilder.add(new ArrayList<>());
+            }
+            outputBuilder.get(index).add(String.join(", ", entryToBuild));
         }
-        String output = "" + String.join("\n", outputBuilder);
-        event.getChannel().sendMessage("<@" + event.getAuthor().getId() + "> \n"
+        String[] outputArray = new String[outputBuilder.size()];
+        for(List<String> outputList:outputBuilder){
+            outputArray[outputBuilder.indexOf(outputList)] = "" + String.join("\n", outputList);
+        }
+        event.getChannel().sendMessage("***<@" + event.getAuthor().getId() + "> \n"
                 + "The full Crafting Backlog is: \n"
-                + "ID, StartDate, EndDate, Item \n"
-                + output).queue();
+                + "ID, StartDate, EndDate, Item ***\n").queue();
+        for(String output:outputArray){
+            if(output!=null && !output.isEmpty()) {
+                event.getChannel().sendMessage(output).queue();
+            }
+        }
+
     }
 
     private void showHelp(MessageReceivedEvent event){
@@ -173,24 +179,17 @@ public class CraftHandler {
 
     private void generateCraftingList(MessageReceivedEvent event){
         String crafterID = event.getAuthor().getId();
-        List<String[]> entries = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null){
-                String[] values  = line.split(",");
-                entries.add(values);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         List<String> outputBuilder = new ArrayList<>();
-        for (String[] entry : entries) {
+        for (String[] entry : craftBacklog) {
             if (entry[0].equals(crafterID)) {
-                entry[0] = "<@" + entry[0] + ">";
-                entry[1] = entry[1].substring(0, 10);
-                entry[2] = entry[2].substring(0, 10);
-                outputBuilder.add(String.join(", ", entry));
+                String[] entryToBuild = new String[4];
+                String name = event.getGuild().getMemberById(entry[0]).getNickname();
+                entryToBuild[0] = name;
+                entryToBuild[1] = entry[1].substring(0, 10);
+                entryToBuild[2] = entry[2].substring(0, 10);
+                entryToBuild[3] = entry[3];
+                outputBuilder.add(String.join(", ", entryToBuild));
             }
         }
         String output = "" + String.join("\n", outputBuilder);
@@ -445,10 +444,13 @@ public class CraftHandler {
         }
         craftBacklog.add(outputArray);
 
+        List<Object> writeList = new ArrayList<>();
+        for(String field:outputArray){
+            writeList.add(field);
+        }
+
         try {
-            writer.newLine();
-            writer.write(outputString);
-            writer.flush();
+            SheetInformationBuffer.writeToCraft(writeList);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -460,15 +462,19 @@ public class CraftHandler {
 
     private List<String[]> importCraftingList(){
         List<String[]> building = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null){
-                String[] values  = line.split(",");
-                building.add(values);
-            }
-        } catch (IOException e) {
+        List<List<String>> rawData = new ArrayList<>();
+        try {
+            rawData = SheetInformationBuffer.retrieveCraftSheetData();
+        } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
+        }
+
+        for(List<String> row:rawData){
+            String[] rowArray = new String[row.size()];
+            for(int i = 0; i<row.size(); i++){
+                rowArray[i] = row.get(i);
+            }
+            building.add(rowArray);
         }
 
         return building;
@@ -486,7 +492,7 @@ public class CraftHandler {
                 }
             }
         }
-        LocalDateTime target = LocalTime.parse("13:00").atDate(LocalDate.now());
+        /*LocalDateTime target = LocalTime.parse("13:00").atDate(LocalDate.now());
         long trigger = LocalDateTime.now().until(target, SECONDS);
         if(trigger!=0){
             for (int i = 0; i < building.size(); i++) {
@@ -495,7 +501,7 @@ public class CraftHandler {
                 assert text != null;
                 //text.sendMessage("<@" + entry[0] + ">\nYour ***" + entry[3] + "*** is ready for pickup").queueAfter(trigger, TimeUnit.SECONDS);
             }
-        }
+        }*/
         return building;
 
     }

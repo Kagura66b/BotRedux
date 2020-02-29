@@ -16,11 +16,59 @@ public class SheetInformationBuffer {
     private static List<String[]> itemArray;
     private static Sheets sheets;
 
-    public static List<List<String>> retrieveSheetData() throws IOException, GeneralSecurityException {
+    public static List<List<String>> retrieveItemSheetData() throws IOException, GeneralSecurityException {
         sheets = SheetsBuilder.getSheets();
         String range = "Bot Friendly";
         Sheets.Spreadsheets.Values.Get request =
                 sheets.spreadsheets().values().get(itemsID, range);
+
+        List<List<Object>> response = request.execute().getValues();
+        List<List<String>> sheetData = new ArrayList<>(new ArrayList<>());
+        for(List<Object> row:response){
+            List<String> cellText = new ArrayList<>();
+            for(Object cell:row){
+                cellText.add(cell.toString());
+            }
+            sheetData.add(cellText);
+        }
+        return sheetData;
+    }
+
+    public static void writeToCraft(List<Object> entry) throws IOException {
+        List<List<Object>> outputToBody = new ArrayList<>();
+        outputToBody.add(entry);
+
+        ValueRange body = new ValueRange().setValues(outputToBody);
+
+        sheets.spreadsheets().values()
+                .append(ID, "A1", body)
+                .setValueInputOption("RAW")
+                .setInsertDataOption("INSERT_ROWS")
+                .setIncludeValuesInResponse(true)
+                .execute();
+    }
+
+    public static void cancelCraft(List<Object> entry) throws IOException {
+        Sheets.Spreadsheets.Values.Get request =
+                sheets.spreadsheets().values().get(ID, "Sheet1");
+        List<List<Object>> response = request.execute().getValues();
+        response.remove(entry);
+
+        ValueRange body = new ValueRange().setValues(response);
+
+        sheets.spreadsheets().values().clear(ID, "Sheet1", new ClearValuesRequest()).execute();
+        sheets.spreadsheets().values()
+                .update(ID, "A1", body)
+                .setValueInputOption("RAW")
+                .setIncludeValuesInResponse(true)
+                .execute();
+    }
+
+    public static List<List<String>> retrieveCraftSheetData() throws GeneralSecurityException, IOException {
+        sheets = SheetsBuilder.getSheets();
+        String range = "Sheet1";
+        Sheets.Spreadsheets.Values.Get request =
+                sheets.spreadsheets().values().get(ID, range);
 
         List<List<Object>> response = request.execute().getValues();
         List<List<String>> sheetData = new ArrayList<>(new ArrayList<>());
@@ -52,7 +100,7 @@ public class SheetInformationBuffer {
     private static void readFromSheet() throws IOException {
         String range = "Bot Friendly";
         Sheets.Spreadsheets.Values.Get request =
-                sheets.spreadsheets().values().get(ID, range);
+                sheets.spreadsheets().values().get(ID, "Sheet1");
 
         List<List<Object>> response = request.execute().getValues();
         StringBuilder build = new StringBuilder();
