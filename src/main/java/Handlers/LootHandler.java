@@ -45,7 +45,8 @@ public class LootHandler {
                 "    low CRs can be shown as either 1/4 or 0.25\n" +
                 "    From this point magic items can be generated using the following command\n" +
                 "!!loot items <amount of money>: generates a loot item list based on the amount of gold it is given\n" +
-                "!!loot help: Shows this help list```";
+                "!!loot help: Shows this help list" +
+                "!!loot property|prop|minor: generate a minor property```";
         event.getChannel().sendMessage(out).queue();
 
     }

@@ -28,7 +28,7 @@ public class ItemDataTable {
         for(List<String> row:rawData) {
             String[] rowArray = new String[row.size()];
             for (int i = 0; i < row.size(); i++) {
-                rowArray[i] = row.get(i);
+                rowArray[i] = row.get(i).replaceAll("a446", "\n").replaceAll("a445", ",");
             }
             // (String[])row.toArray();
             newRecords.add(rowArray);
@@ -71,7 +71,7 @@ public class ItemDataTable {
         for(List<String> row:rawData) {
             String[] rowArray = new String[row.size()];
             for (int i = 0; i < row.size(); i++) {
-                rowArray[i] = row.get(i);
+                rowArray[i] = row.get(i).replaceAll("a446", "\n").replaceAll("a445", ",");
             }
             // (String[])row.toArray();
             newRecords.add(rowArray);

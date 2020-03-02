@@ -47,7 +47,7 @@ public class CraftHandler {
     1: StartDate
     2: EndDate
     3: Item
-    4: guildID
+    4: CrafterChar
     5: channelID
      */
 
@@ -218,15 +218,18 @@ public class CraftHandler {
         1 - prof int
         2 - intel int
         3 - tool/skill string
+        4 - crafterChar
          */
         boolean[] delete = new boolean[parsing.length];
         delete[0] = true;
         delete[1] = true;
-        String[] arguementArray = new String[4];
+        delete[2] = true;
+        String[] arguementArray = new String[5];
         arguementArray[0] = "false";
         arguementArray[1] = "0";
         arguementArray[2] = "0";
         arguementArray[3] = "None";
+        arguementArray[4] = arguementArray[2];
         for (int i = 2; i < parsing.length; i++) {
             if (parsing[i].equals("-expertise") || parsing[i].equals("-expert") || parsing[i].equals("-e")) {
                 arguementArray[0] = "true";
@@ -277,13 +280,13 @@ public class CraftHandler {
         boolean isCrafting = false;
         for(String[] entry: craftBacklog){
             LocalDateTime end = LocalDateTime.parse(entry[2]);
-            if(entry[0].contains(event.getAuthor().getId()) && LocalDateTime.now().isBefore(end)){
+            if(entry[0].contains(event.getAuthor().getId()) && LocalDateTime.now().isBefore(end) && entry[4].contains(arguementArray[4])){
                 isCrafting = true;
             }
         }
 
         if(isCrafting){
-            event.getChannel().sendMessage("You are already crafting").queue();
+            event.getChannel().sendMessage(arguementArray[4] + " is already crafting").queue();
             return;
         }
 
@@ -337,7 +340,7 @@ public class CraftHandler {
                 break;
         }
         int finalTime = baseTime/totalBonus;
-        event.getChannel().sendMessage("Base Time = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
+        event.getChannel().sendMessage("Base Time for " + arguementArray[4] +  " is = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
         //</editor-fold>
 
 
@@ -371,6 +374,7 @@ public class CraftHandler {
         1 - prof int
         2 - intel int
         3 - tool/skill string
+        4 - CrafterChar
          */
         int totalBonus = 10+((Integer.parseInt(args[2])-10)/2);
         System.out.println((Integer.parseInt(args[2])-10)/2 + " and " + totalBonus);
@@ -421,7 +425,6 @@ public class CraftHandler {
                 break;
         }
         int finalTime = baseTime/totalBonus;
-        //event.getChannel().sendMessage("Base Time = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
         LocalDateTime timeStart = LocalDateTime.now();
         LocalDateTime timeEnd = LocalDateTime.now().plusDays(finalTime);
         String crafterID = event.getAuthor().getId();
@@ -433,10 +436,10 @@ public class CraftHandler {
         }
         String timestampStart = timeStart.toString();
         String timestampEnd = timeEnd.toString();
-        String guildID = event.getGuild().getId();
+        String crafterChar = args[4];
         String channelID = event.getChannel().getId();
 
-        String outputString = crafterID + "," + timestampStart + "," + timestampEnd + "," +  item.getName() + "," + guildID + "," + channelID;
+        String outputString = crafterID + "," + timestampStart + "," + timestampEnd + "," +  item.getName() + "," + crafterChar + "," + channelID;
         String[] outputArray = outputString.split(",");
 
         if(timeEnd.toLocalDate().equals(timeStart.toLocalDate())){
