@@ -15,6 +15,7 @@ public class MessageHandler extends ListenerAdapter {
     ItemDataTable dataTable;
     CraftHandler craftHandler;
     LootHandler lootHandler;
+    ShopHandler shopHandler;
     JDA jda;
 
     MessageHandler(ItemDataTable constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
@@ -22,6 +23,7 @@ public class MessageHandler extends ListenerAdapter {
         jda = importJDA;
         craftHandler = new CraftHandler(dataTable, responseHandler, jda);
         lootHandler = new LootHandler(dataTable);
+        shopHandler = new ShopHandler();
     }
 
     @Override
@@ -54,6 +56,11 @@ public class MessageHandler extends ListenerAdapter {
             craftHandler.processCommand(command, event);
         }else if(command.startsWith("!!help")) {
             printHelp(event);
+        }else if(event.getChannel().getId().equals("699670958344110200")){
+            event.getMessage().delete().queue();
+            if(command.startsWith("!!shop")) {
+                shopHandler.processCommand(command, event);
+            }
         }else if(command.startsWith("!8ball")) {
             Random rand = new Random();
             int check = rand.nextInt(3);
@@ -74,6 +81,7 @@ public class MessageHandler extends ListenerAdapter {
             }
         }
     }
+
 
     public void printHelp(MessageReceivedEvent event){
         event.getMessage().delete().queue();
