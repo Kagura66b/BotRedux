@@ -13,7 +13,6 @@ import java.util.List;
 public class SheetInformationBuffer {
     public static final String ID = "1U4ilMqpE7rINHN3P5EEUmXr_f0hZY-geWLuPReTRWNg";
     public static final String itemsID = "12Y06S_7WHCj6gYXVZLcph0PSpe2sdiudErWamr7z0Ck";
-    private static List<String[]> itemArray;
     private static Sheets sheets;
 
     public static List<List<String>> retrieveItemSheetData() throws IOException, GeneralSecurityException {
@@ -81,8 +80,5 @@ public class SheetInformationBuffer {
         }
         return sheetData;
     }
-
-
-
 
 }
