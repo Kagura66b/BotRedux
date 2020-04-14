@@ -15,8 +15,8 @@ import java.util.List;
 public class Authorizer {
     public static HttpRequestInitializer authorize() throws IOException {
         List<String> scopes = Collections.singletonList(SheetsScopes.SPREADSHEETS);
-        //InputStream in = new FileInputStream("C:\\Users\\kingo\\IdeaProjects\\credentials.json");
-        InputStream in = new FileInputStream("/home/ubuntu/credentials.json");
+        InputStream in = new FileInputStream("C:\\Users\\kingo\\IdeaProjects\\credentials.json");
+        //InputStream in = new FileInputStream("/home/ubuntu/credentials.json");
         GoogleCredentials serviceCredentials = ServiceAccountCredentials.fromStream(in).createScoped(scopes);
         return new HttpCredentialsAdapter(serviceCredentials);
     }
