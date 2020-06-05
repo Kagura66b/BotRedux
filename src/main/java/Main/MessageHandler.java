@@ -16,6 +16,7 @@ public class MessageHandler extends ListenerAdapter {
     CraftHandler craftHandler;
     LootHandler lootHandler;
     ShopHandler shopHandler;
+    RollHandler rollHandler;
     JDA jda;
 
     MessageHandler(ItemDataTable constructDataTable, ResponseHandler responseHandler, JDA importJDA) throws IOException {
@@ -24,6 +25,7 @@ public class MessageHandler extends ListenerAdapter {
         craftHandler = new CraftHandler(dataTable, responseHandler, jda);
         lootHandler = new LootHandler(dataTable);
         shopHandler = new ShopHandler();
+        rollHandler = new RollHandler();
     }
 
     @Override
@@ -50,6 +52,8 @@ public class MessageHandler extends ListenerAdapter {
         command = command.toLowerCase();
         if(command.startsWith("!!loot ")){
             lootHandler.processCommand(command, event);
+        }else if(command.startsWith("!!roll ")||command.startsWith("!!r ")){
+            rollHandler.processCommand(command, event);
         }else if(command.startsWith("!!item ")) {
             ItemHandler.processCommand(command, event, dataTable);
         }else if(command.startsWith("!!craft ")||command.startsWith("!!crafting ")){
