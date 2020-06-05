@@ -26,8 +26,6 @@ public class CraftHandler {
     ItemDataTable dataTable;
     List<String[]> craftBacklog;
     List<String[]> itemsDueToday;
-    String fileName = "src/main/resources/items.csv";
-    //BufferedWriter writer;
     Random rand;
     ResponseHandler responseHandler;
     JDA jda;
@@ -169,7 +167,7 @@ public class CraftHandler {
         event.getChannel().sendMessage("***Crafting Commands:*** \n" +
                 "```!!craft help: Shows help\n" +
                 "!!craft list: Shows a list of your orders\n" +
-                "!!craft new <Item>: Starts crafting a new Item\n" +
+                "!!craft new <character name> <Item>: Starts crafting a new Item\n" +
                 "    Arguments:\n" +
                 "    -intelligence|int|i # (REQUIRED. This is your raw stat, not your modifier)\n" +
                 "    -proficiency # (use to set your proficiency. USE ONLY IF PROFICIENT)\n" +
@@ -229,7 +227,7 @@ public class CraftHandler {
         arguementArray[1] = "0";
         arguementArray[2] = "0";
         arguementArray[3] = "None";
-        arguementArray[4] = arguementArray[2];
+        arguementArray[4] = parsing[2];
         for (int i = 2; i < parsing.length; i++) {
             if (parsing[i].equals("-expertise") || parsing[i].equals("-expert") || parsing[i].equals("-e")) {
                 arguementArray[0] = "true";
@@ -340,7 +338,7 @@ public class CraftHandler {
                 break;
         }
         int finalTime = baseTime/totalBonus;
-        event.getChannel().sendMessage("Base Time for " + arguementArray[4] +  " is = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time = "+finalTime+" days").queue();
+        event.getChannel().sendMessage("Base Time for " + arguementArray[4] +  " is = "+baseTime+"\nBonus = "+totalBonus+"\nCrafting time "+finalTime+" days").queue();
         //</editor-fold>
 
 

@@ -1,8 +1,11 @@
+/home/ubuntu/IdeaProjects/BotRedux/src/main/java/GoogleHandlers/SheetInformationBuffer.java
+/home/ubuntu/IdeaProjects/BotRedux/src/main/java/GoogleHandlers/SheetsBuilder.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Main/Item.java
+/home/ubuntu/IdeaProjects/BotRedux/src/main/java/GoogleHandlers/Authorizer.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Main/Main.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Handlers/LootHandler.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Handlers/ResponseHandler.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Main/MessageHandler.java
-/home/ubuntu/IdeaProjects/BotRedux/src/main/java/Main/CSVImport.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Handlers/ItemHandler.java
 /home/ubuntu/IdeaProjects/BotRedux/src/main/java/Handlers/CraftHandler.java
+/home/ubuntu/IdeaProjects/BotRedux/src/main/java/Main/ItemDataTable.java
