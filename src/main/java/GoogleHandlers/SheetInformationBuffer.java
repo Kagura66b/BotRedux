@@ -12,31 +12,18 @@ import java.util.List;
 public class SheetInformationBuffer {
     public static final String craftID = "1U4ilMqpE7rINHN3P5EEUmXr_f0hZY-geWLuPReTRWNg";
     public static final String itemsID = "12Y06S_7WHCj6gYXVZLcph0PSpe2sdiudErWamr7z0Ck";
+    public static final String messageHistory = "1P9mlBeGpmW16Dv2wfArBfflJ3Osdw5RG_M44lbFqeyE";
     private static Sheets sheets;
+
+    public static void initialize() throws GeneralSecurityException, IOException {
+        sheets = SheetsBuilder.getSheets();
+    }
 
     public static List<List<String>> retrieveItemSheetData() throws IOException, GeneralSecurityException {
         sheets = SheetsBuilder.getSheets();
         String range = "Bot Friendly";
         Sheets.Spreadsheets.Values.Get request =
                 sheets.spreadsheets().values().get(itemsID, range);
-
-        List<List<Object>> response = request.execute().getValues();
-        List<List<String>> sheetData = new ArrayList<>(new ArrayList<>());
-        for(List<Object> row:response){
-            List<String> cellText = new ArrayList<>();
-            for(Object cell:row){
-                cellText.add(cell.toString());
-            }
-            sheetData.add(cellText);
-        }
-        return sheetData;
-    }
-
-    public static List<List<String>> retrieveCraftSheetData() throws GeneralSecurityException, IOException {
-        sheets = SheetsBuilder.getSheets();
-        String range = "Sheet1";
-        Sheets.Spreadsheets.Values.Get request =
-                sheets.spreadsheets().values().get(craftID, range);
 
         List<List<Object>> response = request.execute().getValues();
         List<List<String>> sheetData = new ArrayList<>(new ArrayList<>());
@@ -64,22 +51,6 @@ public class SheetInformationBuffer {
                 .execute();
     }
 
-    public static void cancelCraft(List<Object> entry) throws IOException {
-        Sheets.Spreadsheets.Values.Get request =
-                sheets.spreadsheets().values().get(craftID, "Sheet1");
-        List<List<Object>> response = request.execute().getValues();
-        response.remove(entry);
-
-        ValueRange body = new ValueRange().setValues(response);
-
-        sheets.spreadsheets().values().clear(craftID, "Sheet1", new ClearValuesRequest()).execute();
-        sheets.spreadsheets().values()
-                .update(craftID, "A1", body)
-                .setValueInputOption("RAW")
-                .setIncludeValuesInResponse(true)
-                .execute();
-    }
-
     public static void appendToSheet(String ID, String range, String sheetName, List<List<String>> body) throws IOException {
         List<List<Object>> finalBody = new ArrayList<>();
         for(List<String> row:body){
@@ -101,7 +72,7 @@ public class SheetInformationBuffer {
     public static void writeToSheet(String ID, String range, List<List<Object>> body) throws IOException{
         ValueRange output = new ValueRange().setValues(body);
         sheets.spreadsheets().values()
-                .update(ID, range, output)
+                .append(ID, range, output)
                 .setValueInputOption("RAW")
                 .setIncludeValuesInResponse(true)
                 .execute();
