@@ -2,6 +2,7 @@ package Main;
 
 import GoogleHandlers.SheetInformationBuffer;
 import GoogleHandlers.SheetsBuilder;
+import Handlers.Monitor;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -31,11 +32,14 @@ public class Main{
         builder.setToken(token);
         jda = builder.build();
         jda.awaitReady();
+        /*
         Retriever retriever = new Retriever(jda);
         List<List<Message>> messageHistoryByUser = retriever.getHistory();
         List<List<Object>> export = retriever.convertToArchive(messageHistoryByUser);
         SheetInformationBuffer.writeToSheet(SheetInformationBuffer.messageHistory, "PrimaryLog", export);
         jda.shutdownNow();
-        jda.getGuildById("messages total\tmessages past month\tpast 3 months\tpast 6 months").getMember().join
+        */
+
+        jda.addEventListener(new Monitor());
     }
 }
