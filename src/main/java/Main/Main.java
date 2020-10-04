@@ -1,23 +1,19 @@
 package Main;
 
 import GoogleHandlers.SheetInformationBuffer;
-import GoogleHandlers.SheetsBuilder;
 import Handlers.Monitor;
+import Handlers.RoleHandler;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Message;
 
-import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.List;
 
 public class Main{
 
-    static final String dataTableSource = "src/main/resources/MasterList.csv";
     static final String tokenSource = "/usr/token";
     //static final String tokenSource = "F:\\testToken";
     public static JDA jda;
@@ -32,6 +28,13 @@ public class Main{
         builder.setToken(token);
         jda = builder.build();
         jda.awaitReady();
+        RoleHandler.initHash();
+        jda.addEventListener(new Monitor());
+    }
+}
+
+
+
         /*
         Retriever retriever = new Retriever(jda);
         List<List<Message>> messageHistoryByUser = retriever.getHistory();
@@ -39,7 +42,3 @@ public class Main{
         SheetInformationBuffer.writeToSheet(SheetInformationBuffer.messageHistory, "PrimaryLog", export);
         jda.shutdownNow();
         */
-
-        jda.addEventListener(new Monitor());
-    }
-}
