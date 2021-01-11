@@ -1,14 +1,17 @@
 package Main;
 
-import GoogleHandlers.SheetInformationBuffer;
-import GoogleHandlers.SheetsBuilder;
-import Handlers.Monitor;
+import Handlers.MessageHandler;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PrivateChannel;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
-import javax.security.auth.login.LoginException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,29 +20,28 @@ import java.util.List;
 
 public class Main{
 
-    static final String dataTableSource = "src/main/resources/MasterList.csv";
-    static final String tokenSource = "/usr/token";
-    //static final String tokenSource = "F:\\testToken";
+    //static final String tokenSource = "/usr/token";
+    static final String tokenSource = "F:\\token";
     public static JDA jda;
 
     public static void main(String[] args) throws GeneralSecurityException, IOException, InterruptedException {
-        JDABuilder builder = new JDABuilder(AccountType.BOT);
-        //dataTable = new ItemDataTable("/home/ubuntu/Documents/export2.csv");
         BufferedReader tokenReader = new BufferedReader(new FileReader(tokenSource));
-        SheetInformationBuffer.initialize();
+        //SheetInformationBuffer.initialize();
         String token = tokenReader.readLine();
+        JDABuilder builder = JDABuilder.createDefault(token);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.setChunkingFilter(ChunkingFilter.ALL);
         System.out.println(token);
         builder.setToken(token);
         jda = builder.build();
+        System.out.println("init");
         jda.awaitReady();
-        /*
-        Retriever retriever = new Retriever(jda);
-        List<List<Message>> messageHistoryByUser = retriever.getHistory();
-        List<List<Object>> export = retriever.convertToArchive(messageHistoryByUser);
-        SheetInformationBuffer.writeToSheet(SheetInformationBuffer.messageHistory, "PrimaryLog", export);
-        jda.shutdownNow();
-        */
-
-        jda.addEventListener(new Monitor());
+        System.out.println("Ready");
+        Guild meme = jda.getGuildById("710901052945203214");
+        meme.getMemberCache().forEach(member -> System.out.println(member.getId()));
+        Member orc = meme.getMemberById("175771505219600385");
+        User orcUser = orc.getUser();
+        orcUser.openPrivateChannel().complete().sendMessage("test").complete();
     }
 }
