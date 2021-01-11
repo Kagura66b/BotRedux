@@ -38,10 +38,6 @@ public class Main{
         System.out.println("init");
         jda.awaitReady();
         System.out.println("Ready");
-        Guild meme = jda.getGuildById("710901052945203214");
-        meme.getMemberCache().forEach(member -> System.out.println(member.getId()));
-        Member orc = meme.getMemberById("175771505219600385");
-        User orcUser = orc.getUser();
-        orcUser.openPrivateChannel().complete().sendMessage("test").complete();
+        jda.addEventListener(new MessageHandler());
     }
 }
