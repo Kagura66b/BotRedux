@@ -1,6 +1,5 @@
 package Handlers;
 
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -14,12 +13,12 @@ public class MessageHandler extends ListenerAdapter {
     public void onPrivateMessageReceived(@NotNull PrivateMessageReceivedEvent event) {
         String[] messageArgs = event.getMessage().getContentRaw().split(" ");
         System.out.println("receivedMessage");
-        if(messageArgs[0].equals("!StatCheck")){
-            String[] newArgs = new String[messageArgs.length-1];
-            for(int i = 0;i<messageArgs.length-1;i++){
-                newArgs[i] = messageArgs[i+1];
+        if(messageArgs[0].toLowerCase().equals("!statcheck")){
+            if(event.getMessage().getContentRaw().toLowerCase().equals("!statcheck help")){
+                event.getChannel().sendMessage("This command is used to check the odds of success given either 2 dice pools or a dice pool and a threshold. To test against a threshold use -1 as the limit in the second dataset. Current test parameters are 10000 reps").queue();
+            }else{
+                event.getJDA().addEventListener(new DMStatsHandler(event));
             }
-            event.getJDA().addEventListener(new StatsHandler(event));
         }
     }
 }
