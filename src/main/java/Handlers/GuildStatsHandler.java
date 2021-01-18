@@ -150,6 +150,10 @@ public class GuildStatsHandler extends ListenerAdapter {
                     try {
                         dataSet1[0] = Integer.parseInt(args[0]);
                         dataSet1[1] = Integer.parseInt(args[1]);
+                        if(dataSet1[1]<-1||dataSet1[0]<0){
+                            event.getChannel().sendMessage("Stop with the negatives you git").queue();
+                            event.getJDA().removeEventListener(this);
+                        }
                     } catch(NumberFormatException e){
                         event.getChannel().sendMessage("Invalid Input").queue();
                         event.getJDA().removeEventListener(this);
@@ -174,6 +178,10 @@ public class GuildStatsHandler extends ListenerAdapter {
                     try {
                         dataSet2[0] = Integer.parseInt(args[0]);
                         dataSet2[1] = Integer.parseInt(args[1]);
+                        if(dataSet2[1]<-1||dataSet2[0]<0){
+                            event.getChannel().sendMessage("Stop with the negatives you git").queue();
+                            event.getJDA().removeEventListener(this);
+                        }
                     } catch(NumberFormatException e){
                         event.getChannel().sendMessage("Invalid Input").queue();
                         event.getJDA().removeEventListener(this);

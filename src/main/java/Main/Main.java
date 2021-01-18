@@ -15,8 +15,8 @@ import java.security.GeneralSecurityException;
 
 public class Main{
 
-    //static final String tokenSource = "/usr/token";
-    static final String tokenSource = "F:\\token";
+    static final String tokenSource = "/usr/token";
+    //static final String tokenSource = "F:\\token";
     public static JDA jda;
 
     public static void main(String[] args) throws GeneralSecurityException, IOException, InterruptedException {
