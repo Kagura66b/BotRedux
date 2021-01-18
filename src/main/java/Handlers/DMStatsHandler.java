@@ -36,7 +36,7 @@ public class DMStatsHandler extends ListenerAdapter {
             if(roll >= 4) {
                 hitCount += 1;
                 if (args[2] == 1 && roll == 5) {
-                    i++;
+                    i--;
                 }
             }
             if(roll == 0) {

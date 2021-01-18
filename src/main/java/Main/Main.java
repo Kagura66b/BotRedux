@@ -3,6 +3,7 @@ package Main;
 import Handlers.MessageHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
@@ -26,6 +27,7 @@ public class Main{
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         builder.setMemberCachePolicy(MemberCachePolicy.ALL);
         builder.setChunkingFilter(ChunkingFilter.ALL);
+        builder.setActivity(Activity.playing("!StatCheck"));
         System.out.println(token);
         builder.setToken(token);
         jda = builder.build();
